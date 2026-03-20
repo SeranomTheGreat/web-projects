@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Clinic</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --white: #FAFCFB;
+    --off-white: #F2F5F3;
+    --navy: #0A1628;
+    --deep-navy: #060E1A;
+    --mint: #4ECBA0;
+    --soft-mint: #E8F7F2;
+    --steel: #8FA3B1;
+    --text: #1A2B3C;
+    --text-light: #5A7080;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--white); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 6px; height: 6px; background: var(--mint); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: transform 0.1s; }
+  .cursor-ring { width: 28px; height: 28px; border: 1px solid rgba(78,203,160,0.4); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all 0.15s ease; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 24px 56px; display: flex; justify-content: space-between; align-items: center; background: rgba(250,252,251,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(78,203,160,0.15); }
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--navy); letter-spacing: 0.05em; }
+  .nav-logo span { color: var(--mint); }
+  .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+  .nav-links a { color: var(--text-light); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--navy); }
+  .nav-cta { background: var(--navy); color: var(--white) !important; padding: 10px 22px; font-size: 0.75rem !important; letter-spacing: 0.15em !important; transition: background 0.3s !important; }
+  .nav-cta:hover { background: var(--mint) !important; color: var(--navy) !important; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; padding-top: 80px; }
+  .hero-left { display: flex; flex-direction: column; justify-content: center; padding: 80px 56px; background: var(--white); }
+  .hero-right { position: relative; overflow: hidden; background: var(--navy); }
+  .hero-right-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; mix-blend-mode: luminosity; }
+  .hero-right-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, var(--navy) 0%, rgba(10,22,40,0.4) 100%); }
+  .hero-right-badge { position: absolute; bottom: 60px; left: -30px; background: var(--mint); padding: 28px 32px; }
+  .badge-big { font-family: 'DM Serif Display', serif; font-size: 2.4rem; color: var(--navy); line-height: 1; }
+  .badge-small { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--navy); opacity: 0.7; margin-top: 4px; }
+  .hero-right-float { position: absolute; top: 60px; right: 40px; background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border: 1px solid rgba(78,203,160,0.3); padding: 20px 24px; }
+  .float-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); margin-bottom: 6px; }
+  .float-value { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--white); }
+
+  .hero-tag { font-size: 0.7rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--mint); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .hero-tag::before { content: ''; width: 32px; height: 1px; background: var(--mint); }
+  .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.8rem, 5vw, 4.5rem); color: var(--navy); line-height: 1.05; margin-bottom: 24px; animation: fadeUp 1s ease both; }
+  .hero-title em { font-style: italic; color: var(--mint); }
+  .hero-sub { font-size: 0.92rem; line-height: 1.9; color: var(--text-light); max-width: 440px; margin-bottom: 44px; }
+  .hero-actions { display: flex; gap: 16px; align-items: center; }
+  .btn-primary { background: var(--navy); color: var(--white); text-decoration: none; padding: 16px 32px; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; font-family: 'DM Sans', sans-serif; transition: background 0.3s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn-primary:hover { background: var(--mint); color: var(--navy); }
+  .btn-secondary { color: var(--navy); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid var(--mint); padding-bottom: 2px; transition: color 0.3s; }
+  .btn-secondary:hover { color: var(--mint); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* STATS BAR */
+  .stats-bar { background: var(--navy); padding: 40px 56px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+  .stat-item { text-align: center; }
+  .stat-num { font-family: 'DM Serif Display', serif; font-size: 2.6rem; color: var(--mint); line-height: 1; margin-bottom: 6px; }
+  .stat-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(250,252,251,0.4); }
+
+  /* SERVICES */
+  .services { padding: 100px 56px; background: var(--off-white); }
+  .section-header { margin-bottom: 60px; }
+  .section-tag { font-size: 0.7rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--mint); margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+  .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--mint); }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 4vw, 3.2rem); color: var(--navy); line-height: 1.1; }
+  .section-title em { font-style: italic; color: var(--mint); }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .service-card { background: var(--white); padding: 40px 36px; transition: background 0.4s, transform 0.3s; position: relative; overflow: hidden; }
+  .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--mint); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { background: var(--navy); transform: translateY(-4px); }
+  .service-icon { width: 48px; height: 48px; background: var(--soft-mint); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 24px; transition: background 0.4s; }
+  .service-card:hover .service-icon { background: rgba(78,203,160,0.15); }
+  .service-name { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--navy); margin-bottom: 12px; transition: color 0.4s; }
+  .service-card:hover .service-name { color: var(--white); }
+  .service-desc { font-size: 0.82rem; line-height: 1.8; color: var(--text-light); transition: color 0.4s; }
+  .service-card:hover .service-desc { color: rgba(250,252,251,0.6); }
+
+  /* DOCTORS */
+  .doctors { padding: 100px 56px; }
+  .doctors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 60px; }
+  .doctor-card { border: 1px solid rgba(10,22,40,0.08); overflow: hidden; transition: box-shadow 0.3s, transform 0.3s; }
+  .doctor-card:hover { box-shadow: 0 20px 60px rgba(10,22,40,0.1); transform: translateY(-6px); }
+  .doctor-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; object-position: top; filter: grayscale(20%); transition: filter 0.4s; }
+  .doctor-card:hover .doctor-img { filter: grayscale(0%); }
+  .doctor-info { padding: 24px; }
+  .doctor-spec { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); margin-bottom: 6px; }
+  .doctor-name { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--navy); margin-bottom: 8px; }
+  .doctor-bio { font-size: 0.78rem; line-height: 1.7; color: var(--text-light); }
+
+  /* WHY US */
+  .why { background: var(--navy); padding: 100px 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .why-image { position: relative; }
+  .why-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+  .why-img-accent { position: absolute; top: -20px; right: -20px; width: 50%; aspect-ratio: 1; border: 1px solid rgba(78,203,160,0.2); z-index: -1; }
+  .why-content .section-tag { color: var(--mint); }
+  .why-content .section-tag::before { background: var(--mint); }
+  .why-content .section-title { color: var(--white); margin-bottom: 24px; }
+  .why-body { font-size: 0.88rem; line-height: 2; color: rgba(250,252,251,0.55); margin-bottom: 40px; }
+  .why-list { display: flex; flex-direction: column; gap: 16px; }
+  .why-item { display: flex; gap: 16px; align-items: flex-start; padding: 20px; border: 1px solid rgba(78,203,160,0.12); transition: border-color 0.3s; }
+  .why-item:hover { border-color: rgba(78,203,160,0.4); }
+  .why-check { width: 28px; height: 28px; background: rgba(78,203,160,0.1); border: 1px solid rgba(78,203,160,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--mint); font-size: 0.75rem; }
+  .why-text h4 { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--white); margin-bottom: 4px; }
+  .why-text p { font-size: 0.78rem; color: rgba(250,252,251,0.45); line-height: 1.6; }
+
+  /* TESTIMONIALS */
+  .testimonials { padding: 100px 56px; background: var(--off-white); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .testi-card { background: var(--white); padding: 36px; border-bottom: 3px solid transparent; transition: border-color 0.3s, transform 0.3s; }
+  .testi-card:hover { border-color: var(--mint); transform: translateY(-4px); }
+  .testi-stars { color: var(--mint); font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 16px; }
+  .testi-text { font-family: 'DM Serif Display', serif; font-size: 1.05rem; font-style: italic; color: var(--navy); line-height: 1.7; margin-bottom: 20px; }
+  .testi-author { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-light); }
+
+  /* BOOK */
+  .book { padding: 100px 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .book-content .section-tag { color: var(--mint); }
+  .book-content .section-tag::before { background: var(--mint); }
+  .book-content .section-title { color: var(--navy); margin-bottom: 20px; }
+  .book-body { font-size: 0.88rem; line-height: 2; color: var(--text-light); margin-bottom: 36px; }
+  .book-details { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
+  .book-detail { display: flex; gap: 16px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid rgba(10,22,40,0.06); }
+  .book-detail-icon { width: 36px; height: 36px; background: var(--soft-mint); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.9rem; }
+  .book-detail-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mint); margin-bottom: 2px; }
+  .book-detail-value { font-size: 0.85rem; color: var(--text); }
+  .whatsapp-btn { display: inline-flex; align-items: center; gap: 12px; background: #25D366; color: white; text-decoration: none; padding: 16px 32px; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; font-family: 'DM Sans', sans-serif; transition: background 0.3s; }
+  .whatsapp-btn:hover { background: #1fb855; }
+  .map-container { height: 500px; border: 1px solid rgba(10,22,40,0.08); overflow: hidden; }
+  .map-container iframe { width: 100%; height: 100%; border: none; }
+
+  /* FOOTER */
+  footer { background: var(--deep-navy); padding: 60px 56px 36px; }
+  .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px; margin-bottom: 40px; }
+  .footer-brand .footer-logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--white); margin-bottom: 12px; }
+  .footer-brand .footer-logo span { color: var(--mint); }
+  .footer-brand p { font-size: 0.82rem; line-height: 1.8; color: rgba(250,252,251,0.35); max-width: 280px; }
+  .footer-col h4 { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mint); margin-bottom: 16px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col a { color: rgba(250,252,251,0.4); text-decoration: none; font-size: 0.82rem; transition: color 0.3s; }
+  .footer-col a:hover { color: var(--white); }
+  .footer-bottom { padding-top: 28px; border-top: 1px solid rgba(250,252,251,0.06); font-size: 0.7rem; color: rgba(250,252,251,0.2); letter-spacing: 0.1em; }
+
+  @media (max-width: 768px) {
+    nav { padding: 18px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { height: 50vw; }
+    .hero-left { padding: 60px 24px; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 40px 24px; }
+    .services, .doctors, .testimonials, .book { padding: 60px 24px; }
+    .services-grid, .doctors-grid, .testi-grid { grid-template-columns: 1fr; }
+    .why { grid-template-columns: 1fr; padding: 60px 24px; }
+    .book { grid-template-columns: 1fr; }
+    .map-container { height: 280px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+    footer { padding: 40px 24px 28px; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo">Care<span>+</span> Clinic</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#doctors">Doctors</a></li>
+    <li><a href="#book">Contact</a></li>
+    <li><a href="#book" class="nav-cta">Book Appointment</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-tag">Trusted Healthcare, Imphal</p>
+    <h1 class="hero-title">Your Health,<br>Our <em>Priority</em></h1>
+    <p class="hero-sub">Compassionate, expert care delivered with modern medicine and a personal touch. We treat the whole person — not just the condition.</p>
+    <div class="hero-actions">
+      <a href="#book" class="btn-primary">Book Appointment <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="#services" class="btn-secondary">Our Services</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img class="hero-right-img" src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=900&q=80" alt="Clinic"/>
+    <div class="hero-right-overlay"></div>
+    <div class="hero-right-badge">
+      <div class="badge-big">15+</div>
+      <div class="badge-small">Years of Care</div>
+    </div>
+    <div class="hero-right-float">
+      <div class="float-label">Today's Availability</div>
+      <div class="float-value">Walk-ins Welcome</div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">4,200+</div><div class="stat-label">Patients Treated</div></div>
+  <div class="stat-item"><div class="stat-num">6</div><div class="stat-label">Specialist Doctors</div></div>
+  <div class="stat-item"><div class="stat-num">4.7★</div><div class="stat-label">Google Rating</div></div>
+  <div class="stat-item"><div class="stat-num">15+</div><div class="stat-label">Years Experience</div></div>
+</div>
+
+<section class="services" id="services">
+  <div class="section-header">
+    <p class="section-tag">What We Offer</p>
+    <h2 class="section-title">Comprehensive <em>Care</em></h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">🩺</div>
+      <h3 class="service-name">General Medicine</h3>
+      <p class="service-desc">Full-spectrum primary care for adults and children. Diagnose, treat, and prevent with an experienced physician.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🧬</div>
+      <h3 class="service-name">Lab Diagnostics</h3>
+      <p class="service-desc">On-site blood work, urinalysis, and rapid diagnostic tests. Results within hours, not days.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">💊</div>
+      <h3 class="service-name">Pharmacy</h3>
+      <p class="service-desc">In-house pharmacy stocked with a wide range of medications. No extra trip needed.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🫀</div>
+      <h3 class="service-name">Cardiology</h3>
+      <p class="service-desc">ECG, BP monitoring, and cardiac consultations with our specialist. Heart health taken seriously.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🦷</div>
+      <h3 class="service-name">Dental Care</h3>
+      <p class="service-desc">Cleanings, fillings, and extractions in a calm, professional setting. Pain-free dentistry.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">👁️</div>
+      <h3 class="service-name">Eye Clinic</h3>
+      <p class="service-desc">Vision tests, prescription glasses, and eye health consultations. See clearly, live fully.</p>
+    </div>
+  </div>
+</section>
+
+<section class="doctors" id="doctors">
+  <div class="section-header">
+    <p class="section-tag">Our Team</p>
+    <h2 class="section-title">Meet the <em>Doctors</em></h2>
+  </div>
+  <div class="doctors-grid">
+    <div class="doctor-card">
+      <img class="doctor-img" src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&q=80" alt="Doctor"/>
+      <div class="doctor-info">
+        <p class="doctor-spec">General Medicine</p>
+        <h3 class="doctor-name">Dr. A. Sharma</h3>
+        <p class="doctor-bio">MBBS, MD — 12 years of clinical experience. Specialises in internal medicine and chronic disease management.</p>
+      </div>
+    </div>
+    <div class="doctor-card">
+      <img class="doctor-img" src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&q=80" alt="Doctor"/>
+      <div class="doctor-info">
+        <p class="doctor-spec">Gynaecology</p>
+        <h3 class="doctor-name">Dr. R. Devi</h3>
+        <p class="doctor-bio">MBBS, DGO — Women's health specialist with 10 years in obstetrics and gynaecological care.</p>
+      </div>
+    </div>
+    <div class="doctor-card">
+      <img class="doctor-img" src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&q=80" alt="Doctor"/>
+      <div class="doctor-info">
+        <p class="doctor-spec">Paediatrics</p>
+        <h3 class="doctor-name">Dr. K. Singh</h3>
+        <p class="doctor-bio">MBBS, DCH — Dedicated to the health and growth of children from infancy through adolescence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why">
+  <div class="why-image">
+    <img class="why-img" src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=700&q=80" alt="Clinic interior"/>
+    <div class="why-img-accent"></div>
+  </div>
+  <div class="why-content">
+    <p class="section-tag">Why Choose Us</p>
+    <h2 class="section-title">Care You Can <em>Trust</em></h2>
+    <p class="why-body">We built this clinic with one goal — to give Imphal the quality of healthcare it deserves. Modern equipment, qualified doctors, and a staff that genuinely cares about your outcome.</p>
+    <div class="why-list">
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div class="why-text"><h4>Same-Day Appointments</h4><p>Walk in or WhatsApp — we respect your time.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div class="why-text"><h4>Affordable Consultations</h4><p>Transparent pricing. No hidden fees, no surprises.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div class="why-text"><h4>Modern Equipment</h4><p>Up-to-date diagnostic tools for accurate results.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials">
+  <div class="section-header">
+    <p class="section-tag">Patient Reviews</p>
+    <h2 class="section-title">What Patients <em>Say</em></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The doctors here are genuinely caring. They took time to explain everything clearly and I left feeling confident in my treatment."</p>
+      <p class="testi-author">— Sunita L., Patient</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Clean, professional, and no long wait times. The lab results were ready the same day. Best clinic in Imphal."</p>
+      <p class="testi-author">— Rajan M., Patient</p>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★☆</div>
+      <p class="testi-text">"Very impressed with Dr. Devi. She was thorough and kind. The pharmacy inside is super convenient."</p>
+      <p class="testi-author">— Anita T., Patient</p>
+    </div>
+  </div>
+</section>
+
+<section class="book" id="book">
+  <div class="book-content">
+    <p class="section-tag">Get in Touch</p>
+    <h2 class="section-title">Book an <em>Appointment</em></h2>
+    <p class="book-body">Ready to see a doctor? Message us on WhatsApp and we'll confirm your appointment slot within minutes.</p>
+    <div class="book-details">
+      <div class="book-detail">
+        <div class="book-detail-icon">📍</div>
+        <div><p class="book-detail-label">Location</p><p class="book-detail-value">Imphal, Manipur</p></div>
+      </div>
+      <div class="book-detail">
+        <div class="book-detail-icon">🕐</div>
+        <div><p class="book-detail-label">Hours</p><p class="book-detail-value">Mon–Sat: 9am – 7pm &nbsp;|&nbsp; Sun: 10am – 2pm</p></div>
+      </div>
+      <div class="book-detail">
+        <div class="book-detail-icon">📞</div>
+        <div><p class="book-detail-label">Emergency</p><p class="book-detail-value">Available on WhatsApp for urgent queries</p></div>
+      </div>
+    </div>
+    <a href="https://wa.me/91XXXXXXXXXX" class="whatsapp-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Book on WhatsApp
+    </a>
+  </div>
+  <div class="map-container">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3628!2d93.9368!3d24.817!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3750377a8baaaaab%3A0xf1cb234cc1c89891!2sImphal%2C%20Manipur!5e0!3m2!1sen!2sin!4v1234567890" allowfullscreen loading="lazy"></iframe>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Care<span>+</span> Clinic</div>
+      <p>Serving the people of Imphal with compassionate, expert healthcare. Your wellbeing is our life's work.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">General Medicine</a></li>
+        <li><a href="#">Lab Diagnostics</a></li>
+        <li><a href="#">Dental Care</a></li>
+        <li><a href="#">Eye Clinic</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#">Our Doctors</a></li>
+        <li><a href="#">Book Appointment</a></li>
+        <li><a href="#">Patient Reviews</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Care+ Clinic. All rights reserved. Imphal, Manipur.</div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+  (function animRing() { rx += (mx-rx)*0.12; ry += (my-ry)*0.12; ring.style.left = rx+'px'; ring.style.top = ry+'px'; requestAnimationFrame(animRing); })();
+  document.querySelectorAll('a,button,.service-card,.doctor-card,.testi-card').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform='translate(-50%,-50%) scale(2.5)'; ring.style.transform='translate(-50%,-50%) scale(1.5)'; ring.style.borderColor='rgba(78,203,160,0.8)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform='translate(-50%,-50%) scale(1)'; ring.style.transform='translate(-50%,-50%) scale(1)'; ring.style.borderColor='rgba(78,203,160,0.4)'; });
+  });
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';} }), {threshold:0.1});
+  document.querySelectorAll('.service-card,.doctor-card,.testi-card,.why-item,.book-detail,.stat-item').forEach(el => { el.style.opacity='0'; el.style.transform='translateY(24px)'; el.style.transition='opacity 0.6s ease, transform 0.6s ease'; obs.observe(el); });
+</script>
+</body>
+</html>
