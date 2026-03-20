@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VELOUR — Fine Dining</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0f0d0b;
+    --paper: #f5f0e8;
+    --amber: #c8922a;
+    --amber-light: #e8b84b;
+    --cream: #ede8de;
+    --charcoal: #1c1a18;
+    --smoke: #2e2b27;
+    --muted: #7a7268;
+    --serif: 'Playfair Display', Georgia, serif;
+    --italic: 'Cormorant Garamond', Georgia, serif;
+    --display: 'Bebas Neue', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--italic);
+    font-size: 18px;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--amber);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s, width 0.2s, height 0.2s, opacity 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid var(--amber);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.35s ease, width 0.3s, height 0.3s, opacity 0.3s;
+    opacity: 0.5;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--ink); }
+  ::-webkit-scrollbar-thumb { background: var(--amber); }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 60px;
+    background: linear-gradient(to bottom, rgba(15,13,11,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(2px);
+  }
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 2.2rem;
+    letter-spacing: 0.15em;
+    color: var(--amber);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s, color 0.3s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--amber); }
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--amber);
+    padding: 10px 24px;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+  .nav-cta:hover { background: var(--amber-light); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 80% at 70% 40%, rgba(200,146,42,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 20% 70%, rgba(200,146,42,0.05) 0%, transparent 50%),
+      linear-gradient(160deg, #0f0d0b 0%, #1c1814 40%, #0a0908 100%);
+  }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(200,146,42,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,146,42,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  .hero-year {
+    position: absolute;
+    top: 50%;
+    right: 60px;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--amber);
+    opacity: 0.5;
+    transform-origin: center;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 60px 80px;
+    max-width: 900px;
+  }
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--amber);
+  }
+  .hero-title {
+    font-family: var(--display);
+    font-size: clamp(5rem, 12vw, 11rem);
+    line-height: 0.88;
+    letter-spacing: 0.02em;
+    color: var(--paper);
+    margin-bottom: 32px;
+    animation: fadeUp 1s ease 0.4s both;
+  }
+  .hero-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--amber);
+    font-size: 0.7em;
+  }
+  .hero-sub {
+    font-family: var(--italic);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--muted);
+    max-width: 400px;
+    line-height: 1.7;
+    animation: fadeUp 1s ease 0.6s both;
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    right: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: fadeUp 1s ease 0.8s both;
+  }
+  .hero-scroll span {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* ABOUT */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 80vh;
+  }
+  .about-visual {
+    position: relative;
+    background: var(--charcoal);
+    overflow: hidden;
+    min-height: 500px;
+  }
+  .about-visual-inner {
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(135deg, var(--smoke) 0%, var(--charcoal) 50%, #120f0c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .plate-art {
+    width: 260px;
+    height: 260px;
+    position: relative;
+  }
+  .plate-art svg { width: 100%; height: 100%; }
+  .about-text {
+    padding: 100px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--smoke);
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 32px;
+  }
+  .about-text h2 {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 28px;
+    color: var(--paper);
+  }
+  .about-text h2 em { color: var(--amber); font-style: italic; }
+  .about-text p {
+    font-family: var(--italic);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .stat-row {
+    display: flex;
+    gap: 48px;
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(200,146,42,0.2);
+  }
+  .stat span {
+    display: block;
+    font-family: var(--display);
+    font-size: 3rem;
+    color: var(--amber);
+    line-height: 1;
+  }
+  .stat p {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 6px 0 0;
+  }
+
+  /* MENU */
+  .menu-section {
+    padding: 120px 60px;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .menu-section::before {
+    content: 'MENU';
+    position: absolute;
+    top: 40px;
+    right: -20px;
+    font-family: var(--display);
+    font-size: 14rem;
+    color: rgba(200,146,42,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .menu-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 80px;
+  }
+  .menu-header h2 {
+    font-family: var(--display);
+    font-size: clamp(3rem, 6vw, 6rem);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    color: var(--paper);
+  }
+  .menu-header h2 span { color: var(--amber); }
+  .menu-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--charcoal);
+    padding: 4px;
+  }
+  .menu-tab {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .menu-tab.active {
+    background: var(--amber);
+    color: var(--ink);
+  }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .menu-card {
+    background: var(--charcoal);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+  }
+  .menu-card:hover { background: var(--smoke); }
+  .menu-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--amber);
+    transition: width 0.4s ease;
+  }
+  .menu-card:hover::after { width: 100%; }
+  .menu-card-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--amber);
+    opacity: 0.6;
+    letter-spacing: 0.15em;
+    margin-bottom: 20px;
+  }
+  .menu-card h3 {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--paper);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .menu-card p {
+    font-family: var(--italic);
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .menu-price {
+    font-family: var(--display);
+    font-size: 1.6rem;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+  }
+
+  /* EXPERIENCE BAR */
+  .experience-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--amber);
+  }
+  .exp-item {
+    padding: 48px 40px;
+    border-right: 1px solid rgba(15,13,11,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .exp-item:last-child { border-right: none; }
+  .exp-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  .exp-item h4 {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .exp-item p {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(15,13,11,0.6);
+  }
+
+  /* CONTACT / WHATSAPP */
+  .contact-section {
+    padding: 120px 60px;
+    background: var(--charcoal);
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+  .contact-left h2 {
+    font-family: var(--display);
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.03em;
+    color: var(--paper);
+    margin-bottom: 32px;
+  }
+  .contact-left h2 span { color: var(--amber); }
+  .contact-left p {
+    font-family: var(--italic);
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 48px;
+  }
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  .info-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .info-dot {
+    width: 8px; height: 8px;
+    background: var(--amber);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .info-item div label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .info-item div p {
+    font-family: var(--italic);
+    font-size: 1rem;
+    color: var(--paper);
+    font-style: normal;
+    margin: 0;
+  }
+
+  /* MESSAGE FORM */
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .field label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    background: var(--smoke);
+    border: 1px solid rgba(200,146,42,0.2);
+    color: var(--paper);
+    padding: 14px 18px;
+    font-family: var(--italic);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+    resize: none;
+    width: 100%;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--amber);
+  }
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--muted); font-style: italic; }
+  .field select {
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  .field select option { background: var(--smoke); }
+
+  .wa-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: #25D366;
+    color: #fff;
+    border: none;
+    padding: 18px 32px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .wa-btn:hover {
+    background: #128C7E;
+    transform: translateY(-2px);
+  }
+  .wa-btn svg { width: 22px; height: 22px; }
+  .wa-note {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #25D366;
+    color: #fff;
+    padding: 14px 28px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    z-index: 999;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    padding: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(200,146,42,0.1);
+  }
+  .footer-logo {
+    font-family: var(--display);
+    font-size: 3rem;
+    color: var(--amber);
+    letter-spacing: 0.1em;
+  }
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-align: center;
+  }
+  .footer-links {
+    display: flex;
+    gap: 32px;
+  }
+  .footer-links a {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--amber); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .spin { animation: spin 20s linear infinite; }
+
+  /* REVEAL ON SCROLL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links, .nav-cta { display: none; }
+    .hero-content { padding: 0 24px 60px; }
+    .hero-year { display: none; }
+    .hero-scroll { right: 24px; }
+    .about { grid-template-columns: 1fr; }
+    .about-visual { min-height: 300px; }
+    .about-text { padding: 60px 32px; }
+    .menu-section { padding: 80px 24px; }
+    .menu-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+    .menu-grid { grid-template-columns: 1fr; }
+    .experience-bar { grid-template-columns: 1fr 1fr; }
+    .contact-section { padding: 80px 24px; }
+    .contact-inner { grid-template-columns: 1fr; gap: 60px; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">VELOUR</a>
+  <ul class="nav-links">
+    <li><a href="#about">Story</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Reserve a Table</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-year" style="position:absolute;top:50%;right:60px;font-family:var(--mono);font-size:0.7rem;letter-spacing:0.3em;color:var(--amber);opacity:0.4;writing-mode:vertical-rl;transform:translateY(-50%)">EST. 2019 — IMPHAL</div>
+  <div class="hero-content">
+    <div class="hero-tag">Fine Dining Experience</div>
+    <h1 class="hero-title">
+      WHERE<br>
+      FIRE<br>
+      <em>meets</em><br>
+      FLAVOUR
+    </h1>
+    <p class="hero-sub">An intimate dining atelier where classical technique and bold imagination collide on every plate.</p>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl;">Scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-visual">
+    <div class="about-visual-inner">
+      <div class="plate-art">
+        <svg viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer ring -->
+          <circle cx="130" cy="130" r="118" stroke="#c8922a" stroke-width="0.5" stroke-dasharray="4 8"/>
+          <!-- Plate -->
+          <circle cx="130" cy="130" r="100" fill="#1c1a18" stroke="#c8922a" stroke-width="1"/>
+          <circle cx="130" cy="130" r="85" fill="none" stroke="rgba(200,146,42,0.3)" stroke-width="0.5"/>
+          <!-- Abstract food art -->
+          <ellipse cx="130" cy="130" rx="30" ry="20" fill="rgba(200,146,42,0.15)" transform="rotate(20 130 130)"/>
+          <circle cx="120" cy="118" r="10" fill="rgba(200,146,42,0.4)"/>
+          <circle cx="145" cy="138" r="6" fill="rgba(200,146,42,0.25)"/>
+          <circle cx="128" cy="145" r="4" fill="#c8922a"/>
+          <!-- Sauce drizzle -->
+          <path d="M105 125 Q120 115 135 125 Q148 134 160 122" stroke="#c8922a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M112 140 Q125 150 140 143" stroke="rgba(200,146,42,0.5)" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <!-- Herb dots -->
+          <circle cx="150" cy="120" r="2" fill="#4a7c4e"/>
+          <circle cx="155" cy="127" r="1.5" fill="#4a7c4e"/>
+          <circle cx="148" cy="128" r="1" fill="#4a7c4e"/>
+          <!-- Center text -->
+          <text x="130" y="172" text-anchor="middle" font-family="'Playfair Display', serif" font-size="8" fill="rgba(200,146,42,0.6)" font-style="italic">chef's selection</text>
+          <!-- Spinning outer text -->
+          <g class="spin" style="transform-origin:130px 130px">
+            <path id="textCircle" d="M130,18 A112,112 0 1,1 129.99,18" fill="none"/>
+            <text font-family="'DM Mono', monospace" font-size="7" fill="rgba(200,146,42,0.3)" letter-spacing="8">
+              <textPath href="#textCircle">VELOUR FINE DINING · EST 2019 · IMPHAL · </textPath>
+            </text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="about-text">
+    <div class="section-label">Our Story</div>
+    <h2>Where every dish tells a <em>story</em></h2>
+    <p>VELOUR was born from a singular conviction — that dining is theatre, and every guest deserves the finest act of their evening.</p>
+    <p>We source ingredients at the peak of their season, partner with local farmers and artisans, and transform them through classical French technique with a distinctly regional soul.</p>
+    <div class="stat-row reveal">
+      <div class="stat"><span>7</span><p>Years of craft</p></div>
+      <div class="stat"><span>12</span><p>Seasonal menus</p></div>
+      <div class="stat"><span>4★</span><p>Avg rating</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu-section" id="menu">
+  <div class="menu-header reveal">
+    <h2>THE <span>MENU</span></h2>
+    <div class="menu-tabs">
+      <button class="menu-tab active" onclick="switchTab(this, 'starters')">Starters</button>
+      <button class="menu-tab" onclick="switchTab(this, 'mains')">Mains</button>
+      <button class="menu-tab" onclick="switchTab(this, 'desserts')">Desserts</button>
+    </div>
+  </div>
+
+  <div class="menu-grid" id="starters">
+    <div class="menu-card reveal">
+      <div class="menu-card-num">01</div>
+      <h3>Smoked Duck Tartare</h3>
+      <p>Cold-smoked Manipuri duck, black sesame tuile, fermented plum gel, pickled shallot rings</p>
+      <div class="menu-price">₹ 680</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">02</div>
+      <h3>Scallop Veloutè</h3>
+      <p>Hand-dived scallops, chive cream, crispy capers, saffron oil, micro herbs from our garden</p>
+      <div class="menu-price">₹ 820</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">03</div>
+      <h3>Eromba Amuse-Bouche</h3>
+      <p>Our tribute to Manipuri heritage — smoked fish, fermented bamboo, roasted chili oil, cured yolk</p>
+      <div class="menu-price">₹ 590</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">04</div>
+      <h3>Burrata Garden</h3>
+      <p>Imported burrata, heirloom tomato mosaic, Himalayan salt, aged balsamic, basil snow</p>
+      <div class="menu-price">₹ 750</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">05</div>
+      <h3>Charred Leek Royale</h3>
+      <p>Slow-charred leeks, truffle custard, hazelnut crumble, black garlic emulsion</p>
+      <div class="menu-price">₹ 620</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">06</div>
+      <h3>Chef's Amuse</h3>
+      <p>A rotating trio of seasonal one-bite compositions — ask your server for today's selection</p>
+      <div class="menu-price">₹ 480</div>
+    </div>
+  </div>
+
+  <div class="menu-grid" id="mains" style="display:none">
+    <div class="menu-card reveal">
+      <div class="menu-card-num">01</div>
+      <h3>Wagyu Tenderloin</h3>
+      <p>A5 wagyu, pomme purée, bone marrow jus, roasted shallot, seasonal greens</p>
+      <div class="menu-price">₹ 3,200</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">02</div>
+      <h3>River Fish en Papillote</h3>
+      <p>Local river fish, lemon butter, fennel, cherry tomato, saffron rice, crispy capers</p>
+      <div class="menu-price">₹ 1,450</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">03</div>
+      <h3>Duck Breast Royale</h3>
+      <p>Pan-seared duck, cherry gastrique, potato fondant, wilted spinach, thyme jus</p>
+      <div class="menu-price">₹ 1,800</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">04</div>
+      <h3>Forest Mushroom Risotto</h3>
+      <p>Arborio, wild mushroom medley, aged parmesan, truffle oil, chive crisps</p>
+      <div class="menu-price">₹ 1,100</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">05</div>
+      <h3>Lamb Rack Provençal</h3>
+      <p>Herb-crusted rack, ratatouille, black olive tapenade, garlic confit, rosemary jus</p>
+      <div class="menu-price">₹ 2,400</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">06</div>
+      <h3>Vegetarian Tasting</h3>
+      <p>Seasonal chef's creation, four plates of market-driven plant-based fine dining</p>
+      <div class="menu-price">₹ 1,600</div>
+    </div>
+  </div>
+
+  <div class="menu-grid" id="desserts" style="display:none">
+    <div class="menu-card reveal">
+      <div class="menu-card-num">01</div>
+      <h3>Dark Chocolate Délice</h3>
+      <p>72% Valrhona mousse, salted caramel, cocoa tuile, vanilla Chantilly</p>
+      <div class="menu-price">₹ 520</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">02</div>
+      <h3>Mango Tatin</h3>
+      <p>Alphonso mango, puff pastry, cardamom crème fraîche, pistachio brittle</p>
+      <div class="menu-price">₹ 480</div>
+    </div>
+    <div class="menu-card reveal">
+      <div class="menu-card-num">03</div>
+      <h3>Cheese Selection</h3>
+      <p>A curated board of three artisanal cheeses, quince paste, walnut crackers, dried fruits</p>
+      <div class="menu-price">₹ 650</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE BAR -->
+<div class="experience-bar">
+  <div class="exp-item">
+    <div class="exp-icon">🕯</div>
+    <h4>Intimate Ambience</h4>
+    <p>Only 32 covers per evening</p>
+  </div>
+  <div class="exp-item">
+    <div class="exp-icon">🍷</div>
+    <h4>Curated Wine List</h4>
+    <p>200+ labels, old & new world</p>
+  </div>
+  <div class="exp-item">
+    <div class="exp-icon">👨‍🍳</div>
+    <h4>Open Kitchen</h4>
+    <p>Watch the craft in real time</p>
+  </div>
+  <div class="exp-item">
+    <div class="exp-icon">🌿</div>
+    <h4>Farm to Table</h4>
+    <p>Local sourcing, seasonal menus</p>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left reveal">
+      <div class="section-label">Reservations & Enquiries</div>
+      <h2>MAKE YOUR <span>EVENING</span> UNFORGETTABLE</h2>
+      <p>Send us a message and we'll confirm your reservation or answer any question — directly on WhatsApp.</p>
+      <div class="contact-info">
+        <div class="info-item">
+          <div class="info-dot"></div>
+          <div>
+            <label>Address</label>
+            <p>12 Paona Bazaar Lane, Imphal, Manipur 795001</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-dot"></div>
+          <div>
+            <label>Hours</label>
+            <p>Tue – Sun: 12pm – 3pm, 7pm – 11pm</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-dot"></div>
+          <div>
+            <label>Phone / WhatsApp</label>
+            <p>+91 82879 49012</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form reveal">
+      <div class="section-label">Send a Message</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="name" placeholder="Full name" />
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input type="tel" id="phone" placeholder="+91 00000 00000" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="date" />
+        </div>
+        <div class="field">
+          <label>Guests</label>
+          <select id="guests">
+            <option value="1 guest">1 Guest</option>
+            <option value="2 guests" selected>2 Guests</option>
+            <option value="3 guests">3 Guests</option>
+            <option value="4 guests">4 Guests</option>
+            <option value="5-6 guests">5–6 Guests</option>
+            <option value="7+ guests">7+ Guests</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Special Requests / Message</label>
+        <textarea id="message" rows="4" placeholder="Dietary restrictions, celebrations, preferences…"></textarea>
+      </div>
+      <button class="wa-btn" onclick="sendWhatsApp()">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+        Send via WhatsApp
+      </button>
+      <p class="wa-note">Opens WhatsApp · We reply within 30 minutes during service hours</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VELOUR</div>
+  <div class="footer-copy">
+    © 2025 Velour Fine Dining · Imphal, Manipur<br>
+    <span style="opacity:0.5">All experiences reserved</span>
+  </div>
+  <div class="footer-links">
+    <a href="#about">Story</a>
+    <a href="#menu">Menu</a>
+    <a href="#contact">Reserve</a>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Opening WhatsApp…</div>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = -100, my = -100, rx = -100, ry = -100;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function animCursor() {
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animCursor);
+  })();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => obs.observe(r));
+
+  // Menu tabs
+  function switchTab(btn, id) {
+    document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    ['starters', 'mains', 'desserts'].forEach(s => {
+      document.getElementById(s).style.display = s === id ? 'grid' : 'none';
+    });
+  }
+
+  // WhatsApp sender
+  function sendWhatsApp() {
+    const name = document.getElementById('name').value.trim() || 'Guest';
+    const phone = document.getElementById('phone').value.trim();
+    const date = document.getElementById('date').value;
+    const guests = document.getElementById('guests').value;
+    const message = document.getElementById('message').value.trim();
+
+    const dateStr = date ? new Date(date).toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) : 'Date not specified';
+
+    const text = `Hello VELOUR 👋
+
+*New Reservation Request*
+
+👤 *Name:* ${name}
+📞 *Phone:* ${phone || 'Not provided'}
+📅 *Date:* ${dateStr}
+👥 *Guests:* ${guests}
+💬 *Message:* ${message || 'No special requests'}
+
+Thank you — I look forward to my evening at VELOUR!`;
+
+    const number = '918287949012';
+    const url = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+
+    // Show toast
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+
+    window.open(url, '_blank');
+  }
+
+  // Date input min = today
+  const dateInput = document.getElementById('date');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.min = today;
+  dateInput.value = today;
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 60
+      ? 'rgba(15,13,11,0.97)'
+      : 'linear-gradient(to bottom, rgba(15,13,11,0.95) 0%, transparent 100%)';
+  });
+</script>
+</body>
+</html>
